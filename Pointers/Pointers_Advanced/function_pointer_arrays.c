@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+#include <unistd.h>
+#include <time.h>
 
 typedef enum type
 {
@@ -191,8 +193,11 @@ int main(void)
 
     void (*menu_funcs_1[])() = {&choice1, &choice2, &choice3, &quit};
 
+    printf("******************************PASSING SIMPLE FUNCTIONS TO OUR GENERIC MENU:********************************\n");
     run_menu("", option_text_1, menu_funcs_1, 4);
 
+
+    printf("***********************PASSING SLIGHTLY MORE COMPLEX FUNCTIONS TO OUR GENERIC MENU:************************\n");
     const char *option_text_2[3] = {
         "Compare two `int`s",
         "Compare two `float`s",
