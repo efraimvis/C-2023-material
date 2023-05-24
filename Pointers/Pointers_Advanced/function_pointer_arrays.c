@@ -4,6 +4,7 @@
 #include <limits.h>
 #include <unistd.h>
 #include <time.h>
+#include <stdbool.h>
 
 typedef enum type
 {
@@ -12,33 +13,29 @@ typedef enum type
     STRING
 } Type;
 
+const char *type_names[3] = {"int", "float", "string"};
 
-const char* type_names[3] = {"int", "float", "string"};
-
-
-int cmp_int(const char* str_a, const char* str_b)
+int cmp_int(const char *str_a, const char *str_b)
 {
     int a = atoi(str_a);
     int b = atoi(str_b);
 
-    return  a < b ? -1 :
-            a > b ? 1 : 0;
+    return a < b ? -1 : a > b ? 1
+                              : 0;
 }
 
-
-int cmp_float(const char* str_a, const char* str_b)
+int cmp_float(const char *str_a, const char *str_b)
 {
     int a = atof(str_a);
     int b = atof(str_b);
 
-    return  a < b ? -1 :
-            a > b ? 1 : 0;
+    return a < b ? -1 : a > b ? 1
+                              : 0;
 }
-
 
 /**
  * @brief Compares two variables, represented as strings.
- * 
+ *
  * @param type Type of variables, as defined in enum `Type`
  * @param a First variable
  * @param b Second variable
@@ -46,7 +43,7 @@ int cmp_float(const char* str_a, const char* str_b)
  * @return Negative value if `a` < `b`, positive value if `a` > `b`,
  *         0 if `a` and `b` are equal.
  */
-int var_cmp(Type type, const char* a, const char* b, int (*cmp_funcs[])(const char*, const char*))
+int var_cmp(Type type, const char *a, const char *b, int (*cmp_funcs[])(const char *, const char *))
 {
     return cmp_funcs[type](a, b);
 }
@@ -54,7 +51,7 @@ int var_cmp(Type type, const char* a, const char* b, int (*cmp_funcs[])(const ch
 /**
  * @brief Takes two variables of a given type from user, and prints
  *        what relation in {<,>,=} holds between them.
- * 
+ *
  * @param type Variable type
  */
 void input_vars(Type type)
@@ -70,7 +67,7 @@ void input_vars(Type type)
 
     scanf("%s %s", a, b);
 
-    int (*cmp_funcs[3])(const char* a, const char* b) = {&cmp_int, &cmp_float, &strcmp};
+    int (*cmp_funcs[3])(const char *a, const char *b) = {&cmp_int, &cmp_float, &strcmp};
     int res = var_cmp(type, a, b, cmp_funcs);
 
     strcpy(relation, res > 0 ? ">" : res < 0 ? "<"
@@ -79,10 +76,9 @@ void input_vars(Type type)
     printf("%s %s %s holds.\n", a, relation, b);
 }
 
-
 /**
  * @brief Runs a generic multiple-choice text menu based on parameters.
- * 
+ *
  * @param title Menu title (optional); To use the default title, pass an empty string.
  * @param choice_text The choices displayed to the user. NOTICE: The size of `choice_text`
  *                    must match `num_choices`.
@@ -90,13 +86,20 @@ void input_vars(Type type)
  *                  For choice i, the ith function in `functions` will be called.
  *                  NOTICE: The size of `functions` must match `num_choices`.
  * @param num_choices The number of choices.
+ * @param persistent Determines whether to run the menu persistently, i.e., the menu
+ *                   will not terminate upon the return of the choice function, and
+ *                   will continue to run until the option 'Quit' is chosen.
+ *                   If `persistent` is `true`, then the option 'Quit' will be automatically
+ *                   added as the last choice, and if `false` - a 'Quit' option must be passed
+ *                   within `functions`, if desired.
  */
-void run_menu(const char *title, const char **choice_text, void((*(functions[]))()), int num_choices)
+void run_menu(const char *title, const char **choice_text, void((*(functions[]))()), int num_choices, bool persistent)
 {
     if (!choice_text || !functions || (num_choices <= 0))
         return;
 
     int choice = 0;
+    bool invalid_input = false;
 
     do
     {
@@ -109,19 +112,32 @@ void run_menu(const char *title, const char **choice_text, void((*(functions[]))
         {
             printf("%d. %s\n", (i + 1), choice_text[i]);
         }
+        if (persistent)
+            printf("%d. Quit\n", (num_choices + 1));
+
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
-        if (!((choice >= 1 && choice <= num_choices)))
+        if (!persistent && !(choice >= 1 && choice <= num_choices) ||
+            (persistent && !(choice >= 1 && choice <= (num_choices + 1))))
+        {
+            invalid_input = true;
+        }
+        else
+            invalid_input = false;
+
+        if (invalid_input)
             printf("\nPlease select a valid choice\n\n");
-    } while (!((choice >= 1 && choice <= num_choices)));
+        else
+        {
+            if (choice == num_choices + 1)
+                return;
 
-    void (*chosen_func)() = (functions[(choice - 1)]);
-    chosen_func();
-
-    return;
+            void (*chosen_func)() = functions[(choice - 1)];
+            chosen_func();
+        }
+    } while (invalid_input || persistent);
 }
-
 
 void input_vars_int()
 {
@@ -138,30 +154,25 @@ void input_vars_string()
     input_vars(STRING);
 }
 
-
 void choice1()
 {
     printf("This is choice 1\n");
 }
-
 
 void choice2()
 {
     printf("This is choice 2\n");
 }
 
-
 void choice3()
 {
     printf("This is choice 3\n");
 }
 
-
 void quit()
 {
     return;
 }
-
 
 int main(void)
 {
@@ -170,32 +181,29 @@ int main(void)
     // A function's code is stored in the program's memory,
     // in the TEXT AREA.
 
-    // One use of function pointers is as what's called a "callback" function -
-    // A function called by another function.
-
     // Let's take running text menus as an example of the usefullness of
-    // having function pointers: instead of painstakingly coding out a long
+    // having function pointers:
+    // instead of painstakingly coding out a long
     // function that runs a specific menu, utilizing big (and rigid) switch-case
     // or (worse) if-else-if-else statements for the choices, we can instead
     // create a single interface that can take ANY NUMBER of functions, and
     // run a selection menu, which calls the apropriate function for a given choice.
+
     // In order to "pass a function" as an argument to another function, we must actually
     // pass a FUNCTION POINTER (or in the case of our menu, an ARRAY OF FUNCTION POINTERS)
     // to the function which will call the desired function.
 
     // Let's take a look at how we can use the function `run_menu` implemented above:
-    const char* option_text_1[4] = {
-                                        "Choice 1",
-                                        "Choice 2",
-                                        "Choice 3",
-                                        "Quit"
-                                    };
+    const char *option_text_1[4] = {
+        "Choice 1",
+        "Choice 2",
+        "Choice 3",
+        "Quit"};
 
     void (*menu_funcs_1[])() = {&choice1, &choice2, &choice3, &quit};
 
     printf("******************************PASSING SIMPLE FUNCTIONS TO OUR GENERIC MENU:********************************\n");
-    run_menu("", option_text_1, menu_funcs_1, 4);
-
+    run_menu("", option_text_1, menu_funcs_1, 4, false);
 
     printf("***********************PASSING SLIGHTLY MORE COMPLEX FUNCTIONS TO OUR GENERIC MENU:************************\n");
     const char *option_text_2[3] = {
@@ -205,7 +213,7 @@ int main(void)
 
     void (*menu_funcs_2[])() = {&input_vars_int, &input_vars_float, &input_vars_string};
 
-    run_menu("Select a comparison:", option_text_2, menu_funcs_2, 3);
+    run_menu("Select a comparison:", option_text_2, menu_funcs_2, 3, true);
 
     return 0;
 }
