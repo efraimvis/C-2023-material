@@ -32,7 +32,7 @@ int main(void)
     //hence the need to have two versions.
 
     //Some examples of variables of primitive types:
-    int a;
+    int a = 1674;
     float b;
     char c = 'D';
     double d = 84.5;
@@ -43,23 +43,15 @@ int main(void)
     //will be.
 
     //We can examine a DATA TYPE's SIZE by using the `sizeof` operator, like so:
-    size_t char_size = sizeof(char);
-    size_t int_size = sizeof(int);
-    size_t float_size = sizeof(float); 
-    size_t double_size = sizeof(double);
-
-    //Notice the use of the type `size_t`, it's a data type used to represent sizes of data types,
-    //and it's not a primitive type, more on that later.
-
     printf("Data type sizes:\n\
             \tchar:\t%lu\n\
             \tint:\t%lu\n\
             \tfloat:\t%lu\n\
             \tdouble:\t%lu\n",
-            char_size,
-            int_size,
-            float_size,
-            double_size);
+            sizeof(char),
+            sizeof(int),
+            sizeof(float),
+            sizeof(double));
 
     //We can access the ADDRESS of a variable using the `&` operator, with the syntax: `&<variable name>`
     //Let's take a look at the addresses of the variables that we defined:

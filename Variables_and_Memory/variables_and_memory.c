@@ -2,6 +2,29 @@
 
 int global_int; //This is a global variable
 
+
+/**
+ * @brief Adds 5 to a given number.
+ * 
+ * @param n Number to which to add 5.
+ */
+int local_int_add_five(int n)
+{
+    int five = 5; // This LOCAL VARIABLE exists only as long as this function is running.
+    int result = n + five;
+
+    printf("Addresses of `local_int_add_five`'s variables:\n\
+            `n`:\t%p\n\
+            `five`:\t%p\n\
+            `result`:\t%p\n", 
+            &n,
+            &five,
+            &result);
+
+    printf("Result is: %d\n", result);
+    return result;
+}
+
 int main(void)
 {
     //Here we'll take a look at where and how variables
@@ -36,7 +59,16 @@ int main(void)
 
     //LOCAL variables are defined within a function or block, and are destroyed once the program exits that scope.
     //LOCAL variables are stored in the program memory's STACK, within the STACK FRAME of their respective
-    //function or block.
+    //function or block. Let's take a look at an example:
+    int n = 5;
+    int result;
+    printf("Addresses of `main`'s variables:\n\
+            `n`:\t%p\n\
+            `result`:\t%p\n",
+            &n,
+            &result);
+    result = local_int_add_five(n);
+    printf("Result is: %d\n", result);
 
     //GLOBAL variables are defined OUTSIDE of functions or blocks, and can be accessed from ANYWHERE in the program.
     //They are created when the program starts, and continue to exist until it terminates.
