@@ -107,9 +107,6 @@ int main(void)
     local_static_variable();
     local_static_variable();
 
-
-    const int const_int = 47;
-
     //DYNAMICALLY ALLOCATED variables can be defined anywhere in the program, and the memory allocated to them
     //continues to be allocated to them (and therefore cannot be allocated to other variables) until
     //that memory is explicitly FREED, or until the program terminates.
