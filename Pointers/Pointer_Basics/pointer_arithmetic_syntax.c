@@ -3,7 +3,7 @@
 
 int main(void)
 {
-
+    printf("*********************************POINTER ARITHMETIC - SYNTAX:*********************************\n");
     // Let's take a look at the syntax syntax of pointer arithmetic,
     // and what "pointer arithmetic" actually means.
 
