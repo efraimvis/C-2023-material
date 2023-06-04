@@ -111,6 +111,11 @@ int pop(Stack* stack)
     return top;
 }
 
+/**
+ * @brief Destroys given stack
+ * 
+ * @param stack Given stack
+ */
 void destroy_stack(Stack* stack)
 {
     if(!stack) return;
@@ -126,41 +131,11 @@ void destroy_stack(Stack* stack)
 
 int main(void)
 {
-    //We'll explore the concept of pointers in C,
-    //their syntax and uses.
-
-    //A pointer in C is a variable that stores
-    //AN ADDRESS IN (the program's) MEMORY.
-    //A pointer is declared with the following syntax:
-
-    //<type name>* <variable name>;
-    //OR
-    //<type name> *<variable name>;
-
-    //For example:
-    int* int_ptr;
-    float *float_ptr;
-
-    //Let's create some variables, and assign their addresses to
-    //the pointers that we created:
-    int a = 30;
-    float b = 2.5;
-    int_ptr = &a; //Note the use of the '&' ("address-of") operator
-    float_ptr = &b;
-
-    //We can convince ourselves that a pointer in fact
-    //stores a memory address:
-    printf("The address of `a` is: %p\n", int_ptr);
-    printf("The address of `b` is: %p\n", float_ptr);
-
-    //We can access the VALUE of the memory in the address
-    //stored in the pointer by using the '*' (dereference) operator:
-    printf("The value of `a` is: %d\n", *int_ptr); //Here, `*int_ptr` is the VALUE in the address `int_ptr`
-    printf("The value of `b` is: %.2f\n", *float_ptr);
-
+    printf("*********************************POINTERS - ADVANCED OVERVIEW:*********************************\n");
     //When coding in C, pointers are our way of keeping track of memory addresses, and
     //determining what data is stored in them.
 
+    printf("~~~~~~~~~~~~~~~~~~~~~~~~~USING POINTERS FOR DYNAMIC MEMORY ALLOCATION:~~~~~~~~~~~~~~~~~~~~~~~~~\n");
     //In order to dynamically allocate memory, the use of pointers is MANDATORY.
     //Let's take a look at an example implementation of a stack data structure (defined above):
     Stack* stack = create_stack(MAX_STACK_SIZE); //We have to use a POINTER to a `Stack`!

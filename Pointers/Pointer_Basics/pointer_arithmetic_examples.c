@@ -191,9 +191,10 @@ char *nth_string(char *buffer, int n)
 
 int main(void)
 {
-
+    printf("*********************************POINTER ARITHMETIC:*********************************\n");
     // We'll take a look at the syntax and uses of pointer arithmetic.
 
+    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TRAVERSING A BUFFER:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
     char buffer[MAX_BUFF_SIZE] = {}; // We'll use this array to simulate an input buffer
     strcpy(buffer, "This is a sentence.");
 
@@ -227,6 +228,7 @@ int main(void)
     free(string2);
     string2 = 0;
 
+    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TWO DIMENSIONAL ARRAY:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
     // We can also use pointer arithmetic to access elements of an n-dimensional array,
     // but for now let's look at a 2D array of size NxM (N,M were defined above).
     // The array `arr` define below is, in essence, a ONE dimensional array representation
