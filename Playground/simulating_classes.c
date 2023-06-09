@@ -5,7 +5,7 @@
 typedef struct point_instance
 {
     float x,y;
-    char str_rep[20];
+    char str_rep[64];
 } point_instance;
 
 typedef struct point_class
@@ -25,8 +25,6 @@ point_instance* pb_constructor(float x, float y)
     {
         point->x = x;
         point->y = y;
-        const char empty[20] = {0};
-        strcpy(point->str_rep, empty);
     }
     return point;
 }
@@ -86,6 +84,11 @@ int main(void)
     p2->y = 12;
 
     printf("%s\n", Point.to_string(p2));
+
+    p1->x = -465876;
+    p1->y = 3.14159265358979;
+
+    printf("%s\n", Point.to_string(p1));
 
     delete((void*)&p1, Point.destructor);
 
